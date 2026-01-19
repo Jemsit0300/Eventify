@@ -1,3 +1,68 @@
-.venv   
+.venv/
+venv/
+.env
+
+db.sqlite3
 
 .env
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+build/
+dist/
+*.egg-info/     
+
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# macOS
+.DS_Store
+Thumbs.db
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# JetBrains IDEs
+.idea/
+*.iml
+out/
+
+
+# VS Code
+.vscode/
+*.code-workspace
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# Dependency directories
+node_modules/
+jspm_packages/
+# Optional npm cache directory
+.npm/
+# Optional eslint cache
+.eslintcache
+# Optional stylelint cache
+.stylelintcache
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+# Parcel cache
+.cache/
+# Next.js build output
+.next/
+out/
+# Nuxt.js build / generate output
+.nuxt/
+dist/
