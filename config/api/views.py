@@ -38,26 +38,32 @@ class TicketPurchaseViewSet(
     - Users can only see their own purchases
     - Purchase is immutable (no update / delete)
     """
-    seerializer_class = TicketPurchaseSerializer
+    serializer_class = TicketPurchaseSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return TicketPurchase.objects.filter(user=self.request.user)
-    
-    @transaction.atomic
-    def perform_create(self, serializer):
-        ticket_type = serializer.validated_data['ticket_type']
-        quantity = serializer.validated_data['quantity']
+        user = self.request.user
 
-        if ticket_type.capacity < quantity:
-            raise serializers.ValidationError("Not enough tickets available")
+        if user.is_staff or user.is_superuser:
+            return TicketPurchase.objects.all()
         
-        total_price = ticket_type.price * quantity
+        return TicketPurchase.objects.filter(user=user)
 
-        ticket_type.capacity -= quantity
-        ticket_type.save()
+    def perform_create(self, serializer):
+        with transaction.atomic():
+            ticket_type = (
+                TicketType.objects
 
-        serializer.save(
-            user=self.request.user,
-            total_price=total_price
-        )
+                .select_for_update()
+                .get(id=serializer.validated_data['ticket_type'].id)
+            )
+
+            quantity = serializer.validated_data['quantity']
+
+            if quantity > ticket_type.capacity:
+                raise ValidationError({'quantity': 'Not enough tickets available'})
+            
+            ticket_type.capacity -= quantity
+            ticket_type.save()
+
+            serializer.save(user=self.request.user)

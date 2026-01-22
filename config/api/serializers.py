@@ -24,3 +24,14 @@ class TicketPurchaseSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Quantity must be greater than zero")
         return value
+    
+    def validate(self, data):
+        ticket_type = data['ticket_type']
+        quantity = data['quantity']
+
+        if quantity > ticket_type.capacity:
+            raise serializers.ValidationError({
+                'quantity': "Not enough tickets available"
+            })
+        
+        return data
